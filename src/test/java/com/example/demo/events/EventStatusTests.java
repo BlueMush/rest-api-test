@@ -1,11 +1,11 @@
 package com.example.demo.events;
 
-public enum EventStatus {
+public enum EventStatusTests {
 	DRAFT,
 	PUBLISHED,
 	BEGAN_ENROLLMENT;
 	
-	private EventStatus() {
+	private EventStatusTests() {
 		
 	}
 }
