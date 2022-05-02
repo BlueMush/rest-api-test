@@ -42,11 +42,11 @@ public class EventControllerTests {
 		.build();
 		
 		mockMvc.perform(post("/api/events")
-				.contentType(MediaType.APPLICATION_JSON_UTF8)
-				.accept(MediaTypes.HAL_JSON_VALUE)
-				.content(objectMapper.writeValueAsString(event)))
+				.contentType(MediaType.APPLICATION_JSON_UTF8)				//	contentType ->MediaType 이 요청에 JSON을 담아서 보냄
+				.accept(MediaTypes.HAL_JSON_VALUE)							//	accept 헤더를 통해 어떠한 응답을 원하는지 알려줌  Hypertext Application Language
+				.content(objectMapper.writeValueAsString(event)))			
 			.andDo(print())
 			.andExpect(status().isCreated())
-			.andExpect(jsonPath("id").exists());
+			.andExpect(jsonPath("id").exists());							//	id 가 있는지 확인
 	}
 }
