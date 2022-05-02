@@ -1,4 +1,4 @@
-package com.example.demo.events;
+package com.example.demo.events.entity;
 
 import java.time.LocalDateTime;
 
@@ -7,6 +7,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import com.example.demo.events.EventStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
