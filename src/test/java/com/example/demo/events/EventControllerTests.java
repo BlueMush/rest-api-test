@@ -8,8 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,22 +26,28 @@ public class EventControllerTests {
 	@Autowired
 	ObjectMapper objectMapper;
 	
+	@MockBean
+	EventRepository eventRepository;
+	
 	@SuppressWarnings("deprecation")
 	@Test
 	public void createEvent() throws Exception {
 		
 		Event event = Event.builder()
-		.name("Spring")
-		.description("REST API Dev with Spring")
-		.beginEnrollmentDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
-		.closeEnrollmentDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
-		.beginEventDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
-		.endEventDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
-		.basePrice(100)
-		.maxPrice(200)
-		.limitOfEnrollment(100)
-		.location("ªıøÏπˆº∏≥Û¿Â")
-		.build();
+			.name("Spring")
+			.description("REST API Dev with Spring")
+			.beginEnrollmentDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
+			.closeEnrollmentDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
+			.beginEventDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
+			.endEventDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
+			.basePrice(100)
+			.maxPrice(200)
+			.limitOfEnrollment(100)
+			.location("ªıøÏπˆº∏≥Û¿Â")
+			.build();
+		
+		event.setId(10);
+		Mockito.when(eventRepository.save(event)).thenReturn(event);
 		
 		mockMvc.perform(post("/api/events")
 				.contentType(MediaType.APPLICATION_JSON_UTF8)				//	contentType ->MediaType ¿Ã ø‰√ªø° JSON¿ª ¥„æ∆º≠ ∫∏≥ø
