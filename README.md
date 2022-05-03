@@ -5,7 +5,7 @@
 --- 
 스프링 HATEOAS
 ---
-기능
+*기능
   - 링크 만드는 기능
     - 문자열 가지고 만들기
     - 컨트롤러 + 메소드로 만들기
@@ -15,7 +15,12 @@
     - Traverson
     - LinkDiscoverers
 
-링크
+*링크
   - HREF
   - REL
+    - self
+    - profile
+    - update-evet
+    - query-evets
+
 
