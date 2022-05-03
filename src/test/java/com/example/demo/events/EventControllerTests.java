@@ -11,9 +11,8 @@ import java.time.LocalDateTime;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,7 +22,7 @@ import com.example.demo.events.entity.Event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
-@AutoConfigureWebMvc
+@AutoConfigureMockMvc
 public class EventControllerTests {
 	@Autowired
 	MockMvc mockMvc;
@@ -31,8 +30,6 @@ public class EventControllerTests {
 	@Autowired
 	ObjectMapper objectMapper;
 	
-	@MockBean
-	EventRepository eventRepository;
 	
 	@SuppressWarnings("deprecation")
 	@Test
@@ -51,7 +48,7 @@ public class EventControllerTests {
 			.limitOfEnrollment(100)
 			.location("새우버섯농장")
 			.free(true)
-			.offline(false)
+			.offline(true)
 			.build();
 		
 //		Mockito.when(eventRepository.save(event)).thenReturn(event);
@@ -66,7 +63,7 @@ public class EventControllerTests {
 			.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
 			.andExpect(jsonPath("id").exists())							//	id 가 있는지 확인
 			.andExpect(jsonPath("free").value(false))
-			.andExpect(jsonPath("offline").value(true)) 
+			.andExpect(jsonPath("offline").value(false)) 
 			.andExpect(jsonPath("id").value(Matchers.not(100)));
 	}
 }

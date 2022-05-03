@@ -13,8 +13,6 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 public class EventDto {
 	private String name;
 	private String description;
