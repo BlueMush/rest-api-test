@@ -34,7 +34,6 @@ public class EventControllerTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void createEvent() throws Exception {
-		// df
 		Event event = Event.builder()
 			.id(100)
 			.name("Spring")
@@ -47,8 +46,6 @@ public class EventControllerTest {
 			.maxPrice(200)
 			.limitOfEnrollment(100)
 			.location("새우버섯농장")
-			.free(true)
-			.offline(true)
 			.build();
 		
 //		Mockito.when(eventRepository.save(event)).thenReturn(event);
@@ -61,9 +58,12 @@ public class EventControllerTest {
 			.andExpect(status().isCreated())
 			.andExpect(header().exists(HttpHeaders.LOCATION))
 			.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-			.andExpect(jsonPath("id").exists())							//	id 가 있는지 확인
+//			.andExpect(jsonPath("id").exists())							//	id 가 있는지 확인
 			.andExpect(jsonPath("free").value(false))
 			.andExpect(jsonPath("offline").value(false)) 
-			.andExpect(jsonPath("id").value(Matchers.not(100)));
+			.andExpect(jsonPath("id").value(Matchers.not(100)))
+			.andExpect(jsonPath("_links.self").exists())
+//			.andExpect(jsonPath("_links.profile").exists())
+			.andExpect(jsonPath("_links.update-event").exists());
 	}
 }
