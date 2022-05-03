@@ -15,7 +15,7 @@
     - Traverson
     - LinkDiscoverers
 
-*링크
+* 링크
   - HREF
   - REL
     - self
