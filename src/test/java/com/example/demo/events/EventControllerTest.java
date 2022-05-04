@@ -1,6 +1,6 @@
 package com.example.demo.events;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -8,8 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.util.stream.IntStream;
 
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -19,6 +21,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.demo.common.RestDocsConfiguration;
@@ -29,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
+@ActiveProfiles("test")
 public class EventControllerTest {
 	@Autowired
 	MockMvc mockMvc;
@@ -36,6 +40,8 @@ public class EventControllerTest {
 	@Autowired
 	ObjectMapper objectMapper;
 	
+	@Autowired
+	EventRepository eventRepository;
 	
 	@SuppressWarnings("deprecation")
 	@Test
@@ -45,7 +51,7 @@ public class EventControllerTest {
 			.name("Spring")
 			.description("REST API Dev with Spring")
 			.beginEnrollmentDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
-			.closeEnrollmentDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
+			.closeEnrollmentDateTime(LocalDateTime.of(2022, 05, 02, 18, 32)) 
 			.beginEventDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
 			.endEventDateTime(LocalDateTime.of(2022, 05, 02, 18, 32))
 			.basePrice(100)
@@ -70,7 +76,36 @@ public class EventControllerTest {
 			.andExpect(jsonPath("id").value(Matchers.not(100)))
 			.andExpect(jsonPath("_links.self").exists())
 //			.andExpect(jsonPath("_links.profile").exists())
-			.andExpect(jsonPath("_links.update-event").exists())
-			.andDo(document("create-event"));
+			.andExpect(jsonPath("_links.update-event").exists());
+	}
+	
+	@Test
+	@DisplayName("알 수 없는 요청30개의 이벤트를 10개씩 두번째 페이지 조회하기")
+	public void  queryEvents() throws Exception {
+		//Given
+		IntStream.range(0, 30).forEach(i -> {
+			this.generation(i);
+		});
+		
+		//When
+		this.mockMvc.perform(get("/api/events")
+				.param("page", "1")
+				.param("size", "10")
+				.param("sort", "name,DESC"))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("page").exists())
+			.andExpect(jsonPath("_embedded.eventList[0]._links.self").exists())
+			;
+	}
+
+	
+	private void generation(int i) {
+		Event event = Event.builder()
+				.name("event) + index")
+				.description("test event")
+				.build();
+		
+		this.eventRepository.save(event);
 	}
 }
